@@ -43,7 +43,10 @@
   - [ ] Ripristinare `src/services/api.ts` con le interfacce e i metodi (`Station`, `TravelSolution`, `Vehicle`, `searchStation`, `searchTravelSolutions`) adattati al payload Navitia (`journeys[].sections[]`).
   - [ ] Sostituire il placeholder in `src/components/TravelSearchView.vue` con la UI reale (form A→B + cards delle soluzioni).
   - [ ] Tenere ViaggiaTreno per "Stato Treno" (già funzionante).
-- [ ] **CORS restriction + Rate Limiting** sul proxy Cloudflare Functions (sez. 5.4) — attualmente `_middleware.ts` permette `Access-Control-Allow-Origin: *` e non c'è alcun rate limiting. Da restringere al solo dominio di produzione e aggiungere throttling base.
+- [ ] **CORS restriction + Rate Limiting** sul proxy Cloudflare Functions (sez. 5.4) — attualmente `_middleware.ts` permette `Access-Control-Allow-Origin: *` e non c'è alcun rate limiting. Da restringere al solo dominio di produzione e aggiungere throttling base. Opzioni valutate (2026-05-10):
+  - **CORS strict**: in `_middleware.ts` restringere a `Access-Control-Allow-Origin: https://<dominio-pages>.pages.dev` (e custom domain se configurato), via env var `ALLOWED_ORIGIN`.
+  - **Rate limit globale per-IP** (raccomandato): contatore Cloudflare KV `ratelimit:<ip>:<YYYY-MM-DD>`, limite ~30 req/min e ~500 req/giorno per IP, header `cf-connecting-ip` come chiave. Free tier KV sufficiente. Skippare il per-utente: senza login, "utente" = IP o fingerprint aggirabile, valore aggiunto basso rispetto a per-IP.
+  - **Alternativa zero-code**: Cloudflare Rate Limiting nativo via dashboard (richiede Workers Paid ~$5/mese o Pro plan).
 - [ ] **Test E2E reali per il flusso "Stato Treno"** — al momento c'è solo uno smoke test con API mockata. Dopo aver verificato che `andamentoTreno` ora riceve correttamente il `departureTimestamp`, vale la pena aggiungere un E2E end-to-end con disambiguazione (>1 risultato → BottomSheet) e rendering della timeline.
 - [ ] **Test E2E reali per "Ricerca Viaggio"** — attualmente solo smoke sul cambio tab; bloccato dal punto 1.
 - [ ] **Theme color manifest** — già allineato a `#aa3bff` / `#0d0e1a`, ma da verificare visivamente su Android/iOS reali (sez. 5.5).
