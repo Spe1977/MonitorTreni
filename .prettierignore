@@ -1,0 +1,10 @@
+node_modules
+dist
+dev-dist
+playwright-report
+test-results
+coverage
+package-lock.json
+temp-app
+.claude
+.wrangler
