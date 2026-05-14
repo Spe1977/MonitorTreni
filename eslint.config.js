@@ -12,7 +12,9 @@ export default tseslint.config(
       'playwright-report/**',
       'test-results/**',
       'coverage/**',
-      '.wrangler/**'
+      '.wrangler/**',
+      '.agents/**',
+      '.gemini/**'
     ]
   },
   ...tseslint.configs.recommended,

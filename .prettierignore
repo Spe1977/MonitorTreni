@@ -8,3 +8,9 @@ package-lock.json
 temp-app
 .claude
 .wrangler
+.gemini
+.impeccable
+.agents
+DESIGN.md
+PRODUCT.md
+skills-lock.json

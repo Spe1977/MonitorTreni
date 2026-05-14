@@ -3,7 +3,6 @@ import type { TrainStop } from '../services/api'
 
 defineProps<{
   stops: TrainStop[]
-  isDark: boolean
 }>()
 
 const formatTime = (timestamp: number | null) => {
@@ -19,14 +18,27 @@ const stopDelay = (stop: TrainStop) => Math.max(stop.ritardoArrivo || 0, stop.ri
 
 <template>
   <div class="relative">
-    <div v-for="(stop, index) in stops" :key="index" class="relative flex gap-4 pb-6 last:pb-0">
+    <div
+      v-for="(stop, index) in stops"
+      :key="index"
+      v-memo="[
+        stop.isPartenzaEffettuata,
+        stop.isArrivoEffettuato,
+        stop.ritardoArrivo,
+        stop.ritardoPartenza,
+        stop.partenzaReale,
+        stop.arrivoReale
+      ]"
+      class="relative flex gap-4 pb-6 last:pb-0"
+      style="content-visibility: auto; contain-intrinsic-size: auto 72px"
+    >
       <!-- Timeline track -->
       <div class="flex flex-col items-center flex-shrink-0 w-5">
         <!-- Node -->
         <div
           class="relative z-10 w-3 h-3 rounded-full flex-shrink-0 transition-all mt-1"
           :class="{
-            'w-4 h-4 ring-2 ring-purple-500/40 bg-purple-500':
+            'w-4 h-4 ring-2 ring-blue-500/40 bg-blue-500':
               index === 0 || index === stops.length - 1,
             'bg-emerald-500':
               index !== 0 &&
@@ -38,10 +50,8 @@ const stopDelay = (stop: TrainStop) => Math.max(stop.ritardoArrivo || 0, stop.ri
               index !== stops.length - 1 &&
               isStopPassed(stop) &&
               stopDelay(stop) > 5,
-            'bg-gray-300':
-              index !== 0 && index !== stops.length - 1 && !isStopPassed(stop) && !isDark,
-            'bg-gray-700':
-              index !== 0 && index !== stops.length - 1 && !isStopPassed(stop) && isDark
+            'bg-gray-300 dark:bg-gray-700':
+              index !== 0 && index !== stops.length - 1 && !isStopPassed(stop)
           }"
         ></div>
         <!-- Connecting line -->
@@ -53,9 +63,7 @@ const stopDelay = (stop: TrainStop) => Math.max(stop.ritardoArrivo || 0, stop.ri
               ? stopDelay(stop) > 5
                 ? 'bg-red-400/40'
                 : 'bg-emerald-400/40'
-              : isDark
-                ? 'bg-gray-700/60'
-                : 'bg-gray-200'
+              : 'bg-gray-200 dark:bg-gray-700/60'
           "
         ></div>
       </div>
@@ -67,16 +75,10 @@ const stopDelay = (stop: TrainStop) => Math.max(stop.ritardoArrivo || 0, stop.ri
             class="font-semibold leading-tight truncate text-sm"
             :class="
               index === 0 || index === stops.length - 1
-                ? isDark
-                  ? 'text-white'
-                  : 'text-gray-900'
+                ? 'text-gray-900 dark:text-white'
                 : isStopPassed(stop)
-                  ? isDark
-                    ? 'text-gray-300'
-                    : 'text-gray-700'
-                  : isDark
-                    ? 'text-gray-500'
-                    : 'text-gray-400'
+                  ? 'text-gray-700 dark:text-gray-300'
+                  : 'text-gray-400 dark:text-gray-500'
             "
           >
             {{ stop.stazione }}
@@ -94,15 +96,14 @@ const stopDelay = (stop: TrainStop) => Math.max(stop.ritardoArrivo || 0, stop.ri
         <div class="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs">
           <div v-if="index > 0" class="flex items-center gap-1.5">
             <span
-              class="font-semibold uppercase tracking-wider text-[10px]"
-              :class="isDark ? 'text-gray-500' : 'text-gray-400'"
+              class="font-semibold uppercase tracking-wider text-[10px] text-gray-400 dark:text-gray-500"
             >
               Arrivo
             </span>
             <span
               :class="[
                 stop.arrivoReale ? 'line-through opacity-60' : 'font-semibold',
-                isDark ? 'text-gray-200' : 'text-gray-700'
+                'text-gray-700 dark:text-gray-200'
               ]"
             >
               {{ formatTime(stop.arrivoTeorico) }}
@@ -117,15 +118,14 @@ const stopDelay = (stop: TrainStop) => Math.max(stop.ritardoArrivo || 0, stop.ri
           </div>
           <div v-if="index < stops.length - 1" class="flex items-center gap-1.5">
             <span
-              class="font-semibold uppercase tracking-wider text-[10px]"
-              :class="isDark ? 'text-gray-500' : 'text-gray-400'"
+              class="font-semibold uppercase tracking-wider text-[10px] text-gray-400 dark:text-gray-500"
             >
               Partenza
             </span>
             <span
               :class="[
                 stop.partenzaReale ? 'line-through opacity-60' : 'font-semibold',
-                isDark ? 'text-gray-200' : 'text-gray-700'
+                'text-gray-700 dark:text-gray-200'
               ]"
             >
               {{ formatTime(stop.partenzaTeorica) }}

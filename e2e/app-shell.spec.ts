@@ -4,9 +4,10 @@ test.describe('App Shell', () => {
   test('renders the header and bottom navigation', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByText('Monitor', { exact: false })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Stato Treno/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Ricerca Viaggio/i })).toBeVisible()
+    // Use .first() to match the first visible instance (mobile or desktop)
+    await expect(page.getByText('Monitor', { exact: false }).first()).toBeVisible()
+    await expect(page.getByRole('button', { name: /Stato Treno/i }).first()).toBeVisible()
+    await expect(page.getByRole('button', { name: /Ricerca Viaggio/i }).first()).toBeVisible()
   })
 
   test('Stato Treno is the default view', async ({ page }) => {
@@ -16,7 +17,10 @@ test.describe('App Shell', () => {
 
   test('Ricerca Viaggio shows the work-in-progress placeholder', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: /Ricerca Viaggio/i }).click()
+    await page
+      .getByRole('button', { name: /Ricerca Viaggio/i })
+      .first()
+      .click()
 
     await expect(page.getByText(/Funzionalità in fase di sviluppo/i)).toBeVisible()
   })
@@ -32,7 +36,7 @@ test.describe('App Shell', () => {
 
     await page.goto('/')
     await page.getByPlaceholder('Numero treno (es. 9618)').fill('00000')
-    await page.getByRole('button', { name: 'Cerca', exact: true }).click()
+    await page.getByRole('button', { name: /Cerca treno/i }).click()
 
     await expect(page.getByText(/Treno non trovato/i)).toBeVisible()
   })

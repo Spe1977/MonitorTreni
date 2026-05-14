@@ -6,10 +6,19 @@ Stack: **Vue 3 + TypeScript + Tailwind CSS + Vite + Cloudflare Pages Functions**
 ## Funzionalità
 
 - **Stato Treno** — ricerca per numero treno, badge ritardo live, timeline percorso con orari teorici e reali per ogni fermata, indicatore "OGGI / DOMANI / IERI" con stato dinamico (in partenza tra X / in viaggio / corsa terminata).
-- **Disambiguazione omonimie** via Bottom Sheet quando l'API restituisce più treni con lo stesso numero.
-- **Tema chiaro / scuro** automatico con persistenza su `localStorage`.
+- **Disambiguazione omonimie** via Bottom Sheet accessibile (focus management, chiusura con `Esc`, scroll lock) quando l'API restituisce più treni con lo stesso numero.
+- **Tema chiaro / scuro** automatico con persistenza su `localStorage`. Implementato con la variant nativa `dark:` di Tailwind 4 (zero ramificazioni `:class` runtime).
+- **Layout responsivo** — Bottom Navigation a una mano su mobile, sidebar fissa e dashboard a due colonne (cruscotto + timeline) da breakpoint `md`/`lg` in su.
 - **PWA installabile** su iOS e Android, con App Shell offline e service worker auto-update.
 - **Ricerca soluzioni viaggio (A→B)** — al momento mostra placeholder "Funzionalità in fase di sviluppo" (vedi `task.md` per la roadmap Navitia.io).
+
+## Design System
+
+- **Palette**: blu (`#2563eb`) + indaco/sky come accenti, rosso/smeraldo riservati allo stato del treno (vedi `DESIGN.md`).
+- **Font**: `Space Grotesk` (300–800), caricato da Google Fonts con `preconnect`.
+- **Vetro**: stile `glassmorphism` con due livelli (`.glass`, `.glass-strong`) accelerati in hardware (`translateZ(0)`), sfumature di sfondo "ambient blob".
+- **Accessibilità**: target touch ≥ 44px, contrasti WCAG-conformi, `aria-live`/`aria-modal`/`role="alert"` su feedback async, label dedicate sui controlli icona.
+- **Performance**: `v-memo` + `content-visibility: auto` sulle fermate della timeline, `will-change` mirato su animazioni, font con `display=swap`.
 
 ## Sviluppo locale
 
@@ -76,5 +85,7 @@ Le API ufficiali ViaggiaTreno non rispondono a richieste cross-origin: il proxy 
 
 ## Documentazione di progetto
 
+- [`PRODUCT.md`](./PRODUCT.md) — utenti, scopo, brand personality, principi di design
+- [`DESIGN.md`](./DESIGN.md) — design system (palette, tipografia, elevation, componenti)
 - [`sito.md`](./sito.md) — specifica funzionale dell'MVP
 - [`task.md`](./task.md) — roadmap, problemi aperti, riferimenti API

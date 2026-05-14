@@ -26,8 +26,9 @@
   - [x] Unit & E2E Tests for Train Status flow (unit + smoke E2E con API mockata).
 - [ ] **Phase 6: View 2 - Ricerca Viaggio** ⏸️ _Disabilitata: placeholder "Funzionalità in fase di sviluppo" mostrato nella vista. Componenti, CF Functions e API client correlati rimossi dal codice. Riabilitazione vincolata alla migrazione a Navitia.io._
 - [ ] **Phase 7: Quality & Deployment**
-  - [ ] Verify accessibility (A11y, WCAG, ARIA tags).
-  - [ ] Verify Lighthouse score > 95.
+  - [x] A11y baseline (2026-05-14): BottomSheet con `role="dialog"`, `aria-modal`, `aria-labelledby`, chiusura via `Esc`, scroll lock; pulsanti icona con `aria-label`; stati async con `aria-live` (`polite`/`assertive`) e `role="alert"`; touch target ≥ 44px su toggle tema e chiusura sheet.
+  - [ ] Audit WCAG completo (contrasti, screen reader TalkBack/VoiceOver, focus trap completo nel BottomSheet).
+  - [ ] Verify Lighthouse score > 95 (con il refactor `dark:` e `v-memo` ci si aspetta un boost su Performance e Best Practices).
   - [ ] Finalize GitHub Actions CI/CD for Cloudflare Pages.
 
 ---
@@ -57,6 +58,15 @@
 - [x] **PWA ottimizzata (2026-05-10)** — manifest aggiornato (`name: "MonitorTreni"`, `lang: "it"`, `orientation: "portrait"`, `categories`, `purpose: "any"` sulle icone), `index.html` arricchito con `apple-touch-icon`, `mask-icon`, `apple-mobile-web-app-*`, `mobile-web-app-capable`, `viewport-fit=cover`. Manca ancora un PNG maskable per Android adaptive icons (TODO opzionale, non bloccante).
 - [x] **Refactor `buildDepartureInfo`** — estratta la logica del badge data (5 varianti + status text dinamico) in `src/components/departureInfo.ts` con 8 unit test dedicati. Bug fix incidentale: status "in viaggio" ora rispetta il `ritardo` (treno con +60min non viene marcato "corsa terminata" prematuramente); status "in partenza ora" se `now === orarioPartenza`.
 - [x] **Gestione 204 in `train-status`** — l'API ritorna 204 quando il treno non è in circolazione per la data richiesta; il proxy ora restituisce `404 NOT_AVAILABLE` e il client mostra il messaggio specifico "Treno non in circolazione per la data odierna." (prima si vedeva "Impossibile recuperare lo stato del treno." generico).
+- [x] **Refactor dark mode con `dark:` nativo (2026-05-14)** — eliminato il prop `isDark` da `TrainStatusView`, `TrainDashboard`, `RouteTimeline`, `TravelSearchView`, `BottomSheet`. Tutte le classi condizionali sono state convertite alla variant `dark:` di Tailwind 4 (`@custom-variant dark (&:where(.dark, .dark *))`). Vantaggio: meno riconciliazioni Vue, codice più semplice, allineamento alle best practice del framework.
+- [x] **Palette ribrandizzata blu/indaco (2026-05-14)** — sostituito viola (`purple-500/600`) con blu (`blue-500/600`, `sky-500/600`, `indigo-600`) su CTA, badge "REG", gradienti header/sidebar, ring di focus, ambient blob di sfondo. Allinea l'UI con `DESIGN.md` (primary `#2563eb`). I tokens `--color-primary` in `style.css` sono ancora viola legacy — riallineamento opzionale (non bloccante perché le classi Tailwind sono dirette).
+- [x] **Font Space Grotesk (2026-05-14)** — sostituito Inter con Space Grotesk (pesi 400-800), caricato da Google Fonts con `preconnect`. Il font è dichiarato sia in `index.html` sia in `src/style.css` (`--font-sans` + reset base) per coprire SSR/hydration.
+- [x] **Layout responsivo desktop (2026-05-14)** — aggiunta sidebar laterale (`md:`+) con navigazione verticale + toggle tema dedicato; bottom nav e header mobile nascosti da `md` in su. Su `lg:` lo "Stato Treno" passa a layout a due colonne (cruscotto sticky 420px + timeline allargata). E2E aggiornati con `.first()` per gestire la coesistenza dei due selettori di navigazione nel DOM.
+- [x] **A11y BottomSheet e feedback (2026-05-14)** — `role="dialog"`, `aria-modal`, `aria-labelledby`, chiusura con `Esc`, lock scroll del body; `aria-live="polite"` su loader/risultati, `aria-live="assertive"` + `role="alert"` su errori; pulsanti icona con `aria-label`; touch target portati a 44px (`w-11 h-11`).
+- [x] **Performance timeline (2026-05-14)** — `v-memo` sulle fermate (rerender solo se cambiano stato/ritardo/orari reali) + `content-visibility: auto` con `contain-intrinsic-size`; `will-change` mirato sulle animazioni e `transform: translateZ(0)` sulle card glass.
+- [x] **Guardia offline pre-fetch (2026-05-14)** — `searchTrain` e `fetchTrainStatus` controllano `navigator.onLine` prima di chiamare il proxy e mostrano "Sei offline. Controlla la connessione internet." senza far partire la richiesta.
+- [x] **Hardening input (2026-05-14)** — `maxlength="10"` sul numero treno; fallback testuali (`'---'`, `'Origine Sconosciuta'`, `'Sconosciuta'`) e classi `truncate`/`line-clamp-2` su tutti i campi che ricevono dati API per evitare layout break con stringhe lunghe o nulle.
+- [x] **Playwright: dev server vite-only (2026-05-14)** — `playwright.config.ts` ora avvia `npm run dev:vite` (porta 5173) invece di `wrangler pages dev`, perché gli E2E usano già `page.route` per mockare `/api/*`. Riduce flakiness ed evita di scaricare Wrangler in CI.
 
 ---
 

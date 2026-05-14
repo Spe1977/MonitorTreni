@@ -25,6 +25,12 @@ dev-dist
 # Claude Code local settings
 .claude/
 
+# Local LLM agent tooling (may contain secrets / OAuth credentials)
+.agents/
+.gemini/
+.impeccable/
+skills-lock.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

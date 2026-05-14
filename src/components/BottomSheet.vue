@@ -1,13 +1,59 @@
 <script setup lang="ts">
+import { watch, onUnmounted } from 'vue'
 import { X } from 'lucide-vue-next'
 
-defineProps<{
+const props = defineProps<{
   title: string
   isOpen: boolean
-  isDark: boolean
 }>()
 
-defineEmits<{ (e: 'close'): void }>()
+const emit = defineEmits<{ (e: 'close'): void }>()
+
+// Lock body scroll when open
+watch(
+  () => props.isOpen,
+  (isOpen) => {
+    if (typeof document !== 'undefined') {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
+    }
+  }
+)
+
+onUnmounted(() => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = ''
+  }
+})
+
+// Focus trap is ideal here, but at a minimum we handle Escape key
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && props.isOpen) {
+    emit('close')
+  }
+}
+
+watch(
+  () => props.isOpen,
+  (isOpen) => {
+    if (typeof window !== 'undefined') {
+      if (isOpen) {
+        window.addEventListener('keydown', handleKeydown)
+      } else {
+        window.removeEventListener('keydown', handleKeydown)
+      }
+    }
+  }
+)
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('keydown', handleKeydown)
+  }
+})
 </script>
 
 <template>
@@ -16,6 +62,7 @@ defineEmits<{ (e: 'close'): void }>()
       <div
         v-if="isOpen"
         class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+        aria-hidden="true"
         @click="$emit('close')"
       ></div>
     </Transition>
@@ -23,32 +70,29 @@ defineEmits<{ (e: 'close'): void }>()
     <Transition name="sheet">
       <div
         v-if="isOpen"
-        class="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] flex flex-col rounded-t-3xl overflow-hidden"
-        :style="
-          isDark
-            ? 'background:#16182a; border-top:1px solid rgba(255,255,255,0.08);'
-            : 'background:#ffffff; border-top:1px solid rgba(0,0,0,0.08); box-shadow:0 -4px 24px rgba(0,0,0,0.08);'
-        "
+        class="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] flex flex-col rounded-t-3xl overflow-hidden bg-white dark:bg-[#16182a] border-t border-black/10 dark:border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] dark:shadow-none"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bottom-sheet-title"
       >
         <!-- Handle -->
         <div class="flex justify-center pt-3 pb-1 flex-shrink-0">
-          <div class="w-10 h-1 rounded-full" :class="isDark ? 'bg-gray-700' : 'bg-gray-200'"></div>
+          <div class="w-10 h-1 rounded-full bg-gray-200 dark:bg-gray-700"></div>
         </div>
         <!-- Header -->
         <div class="flex items-center justify-between px-5 py-3 flex-shrink-0">
-          <h3 class="text-lg font-bold" :class="isDark ? 'text-white' : 'text-gray-900'">
+          <h3
+            id="bottom-sheet-title"
+            class="text-lg font-bold text-gray-900 dark:text-white truncate"
+          >
             {{ title }}
           </h3>
           <button
-            class="w-8 h-8 flex items-center justify-center rounded-full transition-colors"
-            :class="
-              isDark
-                ? 'bg-gray-800 text-gray-400 hover:text-white'
-                : 'bg-gray-100 text-gray-500 hover:text-gray-900'
-            "
+            class="w-11 h-11 flex flex-shrink-0 items-center justify-center rounded-full transition-colors bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            aria-label="Chiudi"
             @click="$emit('close')"
           >
-            <X class="w-4 h-4" />
+            <X class="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
         <!-- Content -->
