@@ -150,11 +150,9 @@ const toggleDark = useToggle(isDark)
     </aside>
 
     <!-- Main Content Area -->
-    <main
-      class="flex-1 overflow-y-auto pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0 relative z-10 flex justify-center w-full"
-    >
+    <main class="flex-1 overflow-y-auto md:pb-0 relative z-10 flex justify-center w-full">
       <div
-        class="max-w-md md:max-w-2xl lg:max-w-5xl w-full min-h-full px-4 pt-4 md:pt-10 md:px-8 lg:px-12"
+        class="max-w-md md:max-w-2xl lg:max-w-5xl w-full min-h-full px-4 pt-4 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0 md:pt-10 md:px-8 lg:px-12"
       >
         <KeepAlive>
           <TrainStatusView v-if="currentTab === 'status'" />
