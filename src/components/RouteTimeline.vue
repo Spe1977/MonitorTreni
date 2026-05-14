@@ -7,9 +7,11 @@ defineProps<{
 
 const formatTime = (timestamp: number | null) => {
   if (!timestamp) return '--:--'
-  return new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit' }).format(
-    new Date(timestamp)
-  )
+  return new Intl.DateTimeFormat('it-IT', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Rome'
+  }).format(new Date(timestamp))
 }
 
 const isStopPassed = (stop: TrainStop) => stop.isPartenzaEffettuata || stop.isArrivoEffettuato
