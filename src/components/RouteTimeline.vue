@@ -32,7 +32,6 @@ const stopDelay = (stop: TrainStop) => Math.max(stop.ritardoArrivo || 0, stop.ri
         stop.arrivoReale
       ]"
       class="relative flex gap-4 pb-6 last:pb-0"
-      style="content-visibility: auto; contain-intrinsic-size: auto 72px"
     >
       <!-- Timeline track -->
       <div class="flex flex-col items-center flex-shrink-0 w-5">
