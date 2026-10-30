@@ -12,7 +12,7 @@ vi.mock('../../services/api', () => ({
 
 describe('TrainStatusView.vue', () => {
   it('renders search input', () => {
-    const wrapper = mount(TrainStatusView, { props: { isDark: true } })
+    const wrapper = mount(TrainStatusView)
     const input = wrapper.find('input[aria-label="Numero treno"]')
     expect(input.exists()).toBe(true)
   })
@@ -21,7 +21,7 @@ describe('TrainStatusView.vue', () => {
     const mocked = vi.mocked(api.searchTrain)
     mocked.mockResolvedValueOnce([])
 
-    const wrapper = mount(TrainStatusView, { props: { isDark: true } })
+    const wrapper = mount(TrainStatusView)
     const input = wrapper.find('input')
     await input.setValue('99999')
     await wrapper.find('form').trigger('submit.prevent')

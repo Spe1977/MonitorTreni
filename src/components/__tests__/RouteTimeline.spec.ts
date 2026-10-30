@@ -29,7 +29,7 @@ describe('RouteTimeline.vue', () => {
       }),
       stop({ stazione: 'MILANO CENTRALE', arrivoTeorico: at('2026-05-10T11:00:00+02:00') })
     ]
-    const wrapper = mount(RouteTimeline, { props: { stops, isDark: false } })
+    const wrapper = mount(RouteTimeline, { props: { stops } })
     const text = wrapper.text()
     expect(text).toContain('ROMA TERMINI')
     expect(text).toContain('BOLOGNA C.LE')
@@ -46,7 +46,7 @@ describe('RouteTimeline.vue', () => {
       }),
       stop({ stazione: 'C', arrivoTeorico: at('2026-05-10T11:00:00+02:00') })
     ]
-    const wrapper = mount(RouteTimeline, { props: { stops, isDark: false } })
+    const wrapper = mount(RouteTimeline, { props: { stops } })
     const text = wrapper.text()
     expect(text).toContain('Arrivo')
     expect(text).toContain('Partenza')
@@ -67,7 +67,7 @@ describe('RouteTimeline.vue', () => {
         isArrivoEffettuato: true
       })
     ]
-    const wrapper = mount(RouteTimeline, { props: { stops, isDark: false } })
+    const wrapper = mount(RouteTimeline, { props: { stops } })
     expect(wrapper.text()).toContain("+12'")
   })
 
@@ -76,7 +76,7 @@ describe('RouteTimeline.vue', () => {
       stop({ stazione: 'A', partenzaTeorica: at('2026-05-10T08:00:00+02:00') }),
       stop({ stazione: 'B', arrivoTeorico: at('2026-05-10T09:30:00+02:00'), ritardoArrivo: 0 })
     ]
-    const wrapper = mount(RouteTimeline, { props: { stops, isDark: false } })
+    const wrapper = mount(RouteTimeline, { props: { stops } })
     expect(wrapper.text()).not.toContain("+0'")
   })
 
@@ -90,7 +90,7 @@ describe('RouteTimeline.vue', () => {
         isArrivoEffettuato: true
       })
     ]
-    const wrapper = mount(RouteTimeline, { props: { stops, isDark: false } })
+    const wrapper = mount(RouteTimeline, { props: { stops } })
     expect(wrapper.text()).toContain('→ 09:32')
   })
 })
