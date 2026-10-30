@@ -3,8 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #7c3aed;
-  --color-primary-light: #a855f7;
+  --color-primary: #2563eb;
+  --color-primary-light: #60a5fa;
   --font-sans: 'Space Grotesk', system-ui, sans-serif;
 }
 
@@ -52,7 +52,7 @@
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, #a855f7, #6366f1);
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

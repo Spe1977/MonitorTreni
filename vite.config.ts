@@ -20,7 +20,7 @@ export default defineConfig({
         name: 'MonitorTreni',
         short_name: 'MonitorTreni',
         description: 'Monitoraggio treni italiani e ritardi in tempo reale',
-        theme_color: '#aa3bff',
+        theme_color: '#2563eb',
         background_color: '#0d0e1a',
         display: 'standalone',
         orientation: 'portrait',
